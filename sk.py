@@ -78,7 +78,7 @@ class SmartKitConnection:
 
 if __name__ == "__main__":
     sk = SmartKitConnection(ACCESS_KEY)
-    result = sk.check_for_new_firmware_available(HOME_ID)
+    result = sk.login(EMAIL, PASSWORD)
     print(result)
 
 # vim:ts=4:nowrap

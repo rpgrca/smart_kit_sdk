@@ -55,8 +55,6 @@ class HomeCloudServiceTests(unittest.TestCase):
         self.assertEqual(0, response.get("ResponseStatus").get("Status"))
         self.assertFalse(response.get("ResponseStatus").get("Messages"))
 
-    # b'{"LoginResult":{"AccessToken":null,"LoginType":0,"ResponseStatus":{"Messages":[{"Code":1001,"Description":"The e-mail address or the Password are incorrect."}],"Status":3}}}'
-    # b'{"LoginResult":{"AccessToken":null,"LoginType":0,"ResponseStatus":{"Messages":[{"Code":8000,"Description":"The Application Token is invalid or it doesn\'t have the Privileges for executing the requested method."}],"Status":2}}}'
     # b'{"LoginWithExpirationResult":{"AccessToken":null,"LoginType":0,"ResponseStatus":{"Messages":[{"Code":8000,"Description":"The Application Token is invalid or it doesn\'t have the Privileges for executing the requested method."}],"Status":2}}}'
 
 
@@ -82,6 +80,7 @@ class HomeCloudServiceAdminTests(unittest.TestCase):
     def test_send_forgotten_mail_should_return_error_when_application_token_is_invalid(self):
         pass
 
+    # b'{"LoginResult":{"AccessToken":null,"LoginType":0,"ResponseStatus":{"Messages":[{"Code":1001,"Description":"The e-mail address or the Password are incorrect."}],"Status":3}}}'
     @unittest.skip("working")
     def test_login_with_invalid_email_should_return_status_1000(self):
         sut = SmartKitConnection("")
@@ -91,6 +90,22 @@ class HomeCloudServiceAdminTests(unittest.TestCase):
         self.assertEqual(3, response.get("ResponseStatus").get("Status"))
         self.assertEqual(1001, response.get("ResponseStatus").get("Messages")[0].get("Code"))
         self.assertEqual("The e-mail address or the Password are incorrect.", response.get("ResponseStatus").get("Messages")[0].get("Description"))
+
+    # b'{"LoginResult":{"AccessToken":null,"LoginType":0,"ResponseStatus":{"Messages":[{"Code":8000,"Description":"The Application Token is invalid or it doesn\'t have the Privileges for executing the requested method."}],"Status":2}}}'
+    @unittest.skip("impossible for application token to be wrong")
+    def test_login_should_return_error_when_application_token_is_invalid(self):
+        pass
+
+    #b'{"LoginResult":{"AccessToken":{"Token":"9F1BFEE4-C9CB-42D2-9BC3-EAFD3D94417B"},"LoginType":1,"ResponseStatus":{"Messages":[],"Status":0}}}'
+    @unittest.skip("working")
+    def test_login_with_correct_email_and_password_should_return_success(self):
+        sut = SmartKitConnection(ACCESS_KEY)
+        response = sut.login(EMAIL, PASSWORD)
+        self.assertIsNotNone(response.get("AccessToken"))
+        self.assertIsNotNone(response.get("AccessToken").get("Token"))
+        self.assertEqual(1, response.get("LoginType"))
+        self.assertEqual(0, response.get("ResponseStatus").get("Status"))
+        self.assertFalse(response.get("ResponseStatus").get("Messages"))
 
 
 if __name__ == "__main__":
