@@ -60,6 +60,7 @@ class HomeCloudServiceTests(unittest.TestCase):
     # b'{"GetFirmwareInformationForAllModelsResult":{"Firmwares":[{"DeviceModelDesc":"BGH-7001","DeviceModelID":1,"Filename":"BGH-7001-WEB.bin","LatestVersion":"1.0.0.10"},{"DeviceModelDesc":"HPA-4200","DeviceModelID":2,"Filename":"HPA-4200-WEB.bin","LatestVersion":"1.0.3.5"},{"DeviceModelDesc":"SMY-4210","DeviceModelID":3,"Filename":"SMY-4210-WEB.bin","LatestVersion":"1.0.1.5"},{"DeviceModelDesc":"BGH-7002","DeviceModelID":4,"Filename":"BGH-7002-WEB.bin","LatestVersion":"1.0.0.11"},{"DeviceModelDesc":"BGH-7032","DeviceModelID":5,"Filename":"BGH-7032-WEB.bin","LatestVersion":"1.0.0.0"},{"DeviceModelDesc":"HPA-4412","DeviceModelID":6,"Filename":"HPA-4412-WEB.bin","LatestVersion":"1.0.3.0"},{"DeviceModelDesc":"HPA-4413","DeviceModelID":7,"Filename":"HPA-4413-WEB.bin","LatestVersion":"1.0.3.0"},{"DeviceModelDesc":"HPA-4202","DeviceModelID":8,"Filename":"HPA-4202-WEB.bin","LatestVersion":"1.0.1.0"},{"DeviceModelDesc":"BGH-7003","DeviceModelID":9,"Filename":"BGH-7003-WEB.bin","LatestVersion":"1.0.0.7"},{"DeviceModelDesc":"BGH-7012","DeviceModelID":10,"Filename":"BGH-7012-WEB.bin","LatestVersion":"1.0.0.8"},{"DeviceModelDesc":"BGH-7033","DeviceModelID":11,"Filename":"BGH-7033-WEB.bin","LatestVersion":"1.0.0.0"},{"DeviceModelDesc":"BGH-7013","DeviceModelID":12,"Filename":"BGH-7013-WEB.bin","LatestVersion":"1.0.0.6"},{"DeviceModelDesc":"HPA-4134","DeviceModelID":13,"Filename":"HPA-4134-WEB.bin","LatestVersion":"1.0.1.1"},{"DeviceModelDesc":"HPA-4143","DeviceModelID":14,"Filename":"HPA-4143-WEB.bin","LatestVersion":"1.0.2.0"},{"DeviceModelDesc":"HPA-4911","DeviceModelID":15,"Filename":"HPA-4911-WEB.bin","LatestVersion":"1.0.0.17"},{"DeviceModelDesc":"HPA-4133","DeviceModelID":16,"Filename":"HPA-4133-WEB.bin","LatestVersion":"1.0.1.0"},{"DeviceModelDesc":"HPA-4153","DeviceModelID":17,"Filename":"HPA-4153-WEB.bin","LatestVersion":"1.0.2.0"},{"DeviceModelDesc":"HPA-4302","DeviceModelID":18,"Filename":"HPA-4302-WEB.bin","LatestVersion":"1.0.1.1"},{"DeviceModelDesc":"BGH-4413","DeviceModelID":19,"Filename":"BGH-4413-WEB.bin","LatestVersion":"1.0.0.0"},{"DeviceModelDesc":"HD-4202","DeviceModelID":20,"Filename":"HD-4202-WEB.bin","LatestVersion":"1.0.0.6"},{"DeviceModelDesc":"HPA-4650","DeviceModelID":21,"Filename":"HPA-4650-WEB.bin","LatestVersion":"1.0.0.10"},{"DeviceModelDesc":"HPA-4970","DeviceModelID":22,"Filename":"HPA-4970-WEB.bin","LatestVersion":"1.0.0.7"},{"DeviceModelDesc":"YALE-4970","DeviceModelID":23,"Filename":"YALE-4970-WEB.bin","LatestVersion":"1.1.0.0"},{"DeviceModelDesc":"UDIN-4202","DeviceModelID":24,"Filename":"UDIN-4202-WEB.bin","LatestVersion":"1.2.0.0"},{"DeviceModelDesc":"HPA-4414","DeviceModelID":25,"Filename":"HPA-4414-WEB.bin","LatestVersion":"1.0.1.0"}],"ResponseStatus":{"Messages":[],"Status":0}}}'
     # b'{"GetGroupResult":{"Group":null,"ResponseStatus":{"Messages":[{"Code":8001,"Description":"The Access Token is invalid or it doesn\'t have the Privileges for executing the requested method."}],"Status":2}}}'
     # {'Group': {'Description': 'AnyHomeDescription', 'GroupID': 1234, 'HomeID': 1234}, 'ResponseStatus': {'Messages': [], 'Status': 0}}
+    # b'{"GetFirmwareInformationResult":{"Firmware":{"DeviceModelDesc":"HPA-4911-WEB.bin - 0.0.0.10","DeviceModelID":15,"Filename":"HPA-4911-WEB.bin","LatestVersion":"0.0.0.10"},"ResponseStatus":{"Messages":[],"Status":0}}}'
 
 class HomeCloudServiceAdminTests(unittest.TestCase):
     @unittest.skip("working")
@@ -109,6 +110,38 @@ class HomeCloudServiceAdminTests(unittest.TestCase):
         self.assertEqual(1, response.get("LoginType"))
         self.assertEqual(0, response.get("ResponseStatus").get("Status"))
         self.assertFalse(response.get("ResponseStatus").get("Messages"))
+
+    # b'{"GetFirmwareInformationResult":{"Firmware":{"DeviceModelDesc":"HPA-4911-WEB.bin - 0.0.0.10","DeviceModelID":15,"Filename":"HPA-4911-WEB.bin","LatestVersion":"0.0.0.10"},"ResponseStatus":{"Messages":[],"Status":0}}}'
+    @unittest.skip("working")
+    def test_get_firmware_information_should_return_information_when_device_exists(self):
+        sut = SmartKitConnection(ACCESS_KEY)
+        response = sut.get_firmware_information("HPA-4911")
+        self.assertEqual(0, response.get("ResponseStatus").get("Status"))
+        self.assertFalse(response.get("ResponseStatus").get("Messages"))
+        self.assertEqual("HPA-4911-WEB.bin - 0.0.0.10", response.get("Firmware").get("DeviceModelDesc"))
+        self.assertEqual(15, response.get("Firmware").get("DeviceModelID"))
+        self.assertEqual("HPA-4911-WEB.bin", response.get("Firmware").get("Filename"))
+        self.assertEqual("0.0.0.10", response.get("Firmware").get("LatestVersion"))
+
+    @unittest.skip("working")
+    def test_get_firmware_information_should_return_error_when_using_invalid_device(self):
+        sut = SmartKitConnection(ACCESS_KEY)
+        response = sut.get_firmware_information("")
+        self.assertEqual(0, response.get("ResponseStatus").get("Status"))
+        self.assertFalse(response.get("ResponseStatus").get("Messages"))
+        self.assertEqual(0, response.get("Firmware").get("DeviceModelID"))
+        self.assertIsNone(response.get("Firmware").get("DeviceModelDesc"))
+        self.assertIsNone(response.get("Firmware").get("Filename"))
+        self.assertIsNone(response.get("Firmware").get("LatestVersion"))
+
+    @unittest.skip("working")
+    def test_get_firmware_information_should_return_error_when_using_invalid_access(self):
+        sut = SmartKitConnection("")
+        response = sut.get_firmware_information("")
+        self.assertEqual(2, response.get("ResponseStatus").get("Status"))
+        self.assertEqual(8001, response.get("ResponseStatus").get("Messages")[0].get("Code"))
+        self.assertIn("The Access Token is invalid", response.get("ResponseStatus").get("Messages")[0].get("Description"))
+        self.assertIsNone(response.get("Firmware"))
 
 
 if __name__ == "__main__":

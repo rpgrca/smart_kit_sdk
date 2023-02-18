@@ -82,6 +82,11 @@ class SmartKitConnection:
         result = self._post_at_HomeCloudService("GetLoginDetails", data=data)
         return result.json().get("GetLoginDetailsResult")
 
+    def get_firmware_information(self, device):
+        data = json.dumps({ "token": { "Token": self.__token }, "deviceModelDescription": device })
+        result = self._post_at_HomeCloudService("GetFirmwareInformation", data=data)
+        return result.json().get("GetFirmwareInformationResult")
+
     def get_firmware_information_for_all_models(self):
         data = json.dumps({ "token": { "Token": self.__token } })
         result = self._post_at_HomeCloudService("GetFirmwareInformationForAllModels", data=data)
@@ -121,7 +126,7 @@ if __name__ == "__main__":
     sk = SmartKitConnection(ACCESS_KEY)
 #    result = sk.get_endpoint_usage_records(HOME_ID, ENDPOINT_ID, { "Day": 17, "Month": 2, "Year": 2023 }, { "Day": 18, "Month": 2, "Year": 2023 }, { "Hour": 23, "Minute": 59, "Second": 59, "Millisecond": 0 }, query_type = 1)
 
-    result = sk.get_group(GROUP_ID)
+    result = sk.get_firmware_information("HPA-4911")
     print(result)
 
 # vim:ts=4:nowrap
