@@ -76,9 +76,26 @@ class SmartKitConnection:
         result = self._post_at_HomeCloudServiceAdmin("SendForgottenPasswordEmail", data=data)
         return result.json().get("SendForgottenPasswordEmailResult")
 
+    # deprecated
+    def get_login_details(self):
+        data = json.dumps({ "token": { "Token": self.__token } })
+        result = self._post_at_HomeCloudService("GetLoginDetails", data=data)
+        return result.json().get("GetLoginDetailsResult")
+
+    def get_firmware_information_for_all_models(self):
+        data = json.dumps({ "token": { "Token": self.__token } })
+        result = self._post_at_HomeCloudService("GetFirmwareInformationForAllModels", data=data)
+        return result.json().get("GetFirmwareInformationForAllModelsResult")
+
+    def get_home(self, home_id):
+        data = json.dumps({ "token": { "Token": self.__token }, "homeID": home_id })
+        result = self._post_at_HomeCloudService("GetHome", data=data)
+        return result.json().get("GetHomeResult")
+
 if __name__ == "__main__":
     sk = SmartKitConnection(ACCESS_KEY)
-    result = sk.login(EMAIL, PASSWORD)
+    result = sk.get_home(HOME_ID)
+
     print(result)
 
 # vim:ts=4:nowrap
