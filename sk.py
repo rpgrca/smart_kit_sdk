@@ -29,14 +29,18 @@ class SmartKitConnection:
         return self.__session.get(self.API_URL_BASE + command,
                                   headers=self._get_http_headers(), **kwargs)
 
+#    def ping(self):
+#        result = self._get("HomeCloudCommandService.svc")
+#        return result.status_code == 200
+
     def ping(self):
-        result = self._get("HomeCloudCommandService.svc")
-        return result.status_code == 200
+        result = self._post_at_HomeCloudService("Ping")
+        return result.json().get("PingResult")
 
     def ping_with_token(self):
         data = json.dumps({ "token": { "token": self.__token } })
         result = self._post_at_HomeCloudService("PingWithToken", data=data)
-        return result.json()["PingWithTokenResult"]
+        return result.json().get("PingWithTokenResult")
 
     def login(self, email, password):
         result = self._post("Login", data=str({ "token": { "Token": self.__token }, "eMail": email, "password": password }))
@@ -57,6 +61,7 @@ with open('account.token') as f:
 
 print(token)
 sk = SmartKitConnection(SmartKitConnection.API_TOKEN)
-result = sk.ping_with_token()
+result = sk.ping()
+print(result)
 
 # vim:ts=4:nowrap
