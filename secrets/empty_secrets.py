@@ -1,0 +1,4 @@
+ACCESS_KEY=None
+HOME_ID=None
+EMAIL=None
+PASSWORD=None

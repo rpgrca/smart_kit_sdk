@@ -1,8 +1,13 @@
 import requests
 import json
 
+try:
+    from secrets.secrets import *
+except ImportError:
+    from secrets.empty_secrets import *
+
 class SmartKitConnection:
-    API_TOKEN = "3939E0F2-08E5-4BB1-B3A6-DDB1183666D3"
+    APPLICATION_TOKEN = "3939E0F2-08E5-4BB1-B3A6-DDB1183666D3"
     API_URL_BASE = "https://bgh-services.solidmation.com/1.0/"
     API_URL = API_URL_BASE + "HomeCloudServiceAdmin.svc/"
 
@@ -25,6 +30,10 @@ class SmartKitConnection:
         return self.__session.post(self.API_URL_BASE + "HomeCloudService.svc/" + command,
                                    headers=self._get_http_headers(), **kwargs)
 
+    def _post_at_HomeCloudServiceAdmin(self, command, **kwargs):
+        return self.__session.post(self.API_URL_BASE + "HomeCloudServiceAdmin.svc/" + command,
+                                   headers=self._get_http_headers(), **kwargs)
+
     def _get(self, command, **kwargs):
         return self.__session.get(self.API_URL_BASE + command,
                                   headers=self._get_http_headers(), **kwargs)
@@ -38,30 +47,39 @@ class SmartKitConnection:
         return result.json().get("PingResult")
 
     def ping_with_token(self):
-        data = json.dumps({ "token": { "token": self.__token } })
+        data = json.dumps({ "token": { "Token": self.__token } })
         result = self._post_at_HomeCloudService("PingWithToken", data=data)
         return result.json().get("PingWithTokenResult")
 
-    def login(self, email, password):
-        result = self._post("Login", data=str({ "token": { "Token": self.__token }, "eMail": email, "password": password }))
-        print(result.content)
-        return result
-
-    def send_forgotten_password_email(self, email):
-        result = self._post("SendForgottenPasswordEmail", data={ "token": { "token": self.__token }, "eMail": email })
-        return result
-
     def get_account(self):
-        result = self._post_at_HomeCloudService("GetAccount", data={ "token": self.__token })
-        return result
+        data = json.dumps({ "token": { "Token": self.__token } })
+        result = self._post_at_HomeCloudService("GetAccount", data=data)
+        return result.json().get("GetAccountResult")
+    
+    def check_for_new_firmware_available(self, home_id):
+        data = json.dumps({ "token": { "Token": self.__token }, "homeid": home_id })
+        result = self._post_at_HomeCloudService("CheckForNewFirmwareAvailable", data=data)
+        return result.json().get("CheckForNewFirmwareAvailableResult")
 
-token = ''
-with open('account.token') as f:
-    token = f.readline().rstrip()
+    def login(self, email, password):
+        data = json.dumps({ "token": { "Token": self.APPLICATION_TOKEN }, "email": email, "password": password })
+        result = self._post_at_HomeCloudServiceAdmin("Login", data=data)
+        return result.json().get("LoginResult")
+ 
+    def login_with_expiration(self, email, password, expiration):
+        data = json.dumps({ "token": { "Token": self.APPLICATION_TOKEN }, "email": email, "password": password, "expiration": expiration })
+        result = self._post_at_HomeCloudServiceAdmin("LoginWithExpiration", data=data)
+        return result.json().get("LoginWithExpirationResult")
+    
+    def send_forgotten_password_email(self, email):
+        data = json.dumps({ "token": { "Token": self.APPLICATION_TOKEN }, "email": email })
+        result = self._post_at_HomeCloudServiceAdmin("SendForgottenPasswordEmail", data=data)
+        print(result)
+        return result.json()
 
-print(token)
-sk = SmartKitConnection(SmartKitConnection.API_TOKEN)
-result = sk.ping()
-print(result)
+if __name__ == "__main__":
+    sk = SmartKitConnection(ACCESS_KEY)
+    result = sk.login(EMAIL, PASSWORD)
+    print(result)
 
 # vim:ts=4:nowrap
