@@ -6,6 +6,7 @@ try:
 except ImportError:
     from secrets.empty_secrets import *
 
+
 class SmartKitConnection:
     APPLICATION_TOKEN = "3939E0F2-08E5-4BB1-B3A6-DDB1183666D3"
     API_URL_BASE = "https://bgh-services.solidmation.com/1.0/"
@@ -92,9 +93,29 @@ class SmartKitConnection:
         result = self._post_at_HomeCloudService("GetHome", data=data)
         return result.json().get("GetHomeResult")
 
+    def get_endpoint_usage_records(self, home_id, endpoint_id, date_from, date_to, time_to, language = "ES", width = 640, height = 480, color = 0xff0000, query_type = 0, email = None):
+        usage = {
+            "HomeID": home_id,
+            "EndpointID": endpoint_id,
+            "DateFrom": date_from,
+            "DateTo": date_to,
+            "TimeTo": time_to,
+            "LanguageCode": language,
+            "ScreenWidth": width,
+            "ScreenHeight": height,
+            "MeteringQueryType": query_type,
+            "EndpointIDsForDoorlockEvents": None,
+            "CustomerColorAsHex": color,
+            "EmailAddressForDownload": email
+        }
+        data = json.dumps({ "token": { "Token": self.__token }, "parameters": usage })
+        result = self._post_at_HomeCloudService("GetEndpointUsageRecords", data=data)
+        return result.json().get("GetEndpointUsageRecordsResult")
+
+
 if __name__ == "__main__":
     sk = SmartKitConnection(ACCESS_KEY)
-    result = sk.get_home(HOME_ID)
+    result = sk.get_endpoint_usage_records(HOME_ID, ENDPOINT_ID, { "Day": 17, "Month": 2, "Year": 2023 }, { "Day": 18, "Month": 2, "Year": 2023 }, { "Hour": 23, "Minute": 59, "Second": 59, "Millisecond": 0 }, query_type = 1)
 
     print(result)
 
