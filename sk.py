@@ -57,29 +57,28 @@ class SmartKitConnection:
         return result.json().get("GetAccountResult")
     
     def check_for_new_firmware_available(self, home_id):
-        data = json.dumps({ "token": { "Token": self.__token }, "homeid": home_id })
+        data = json.dumps({ "token": { "Token": self.__token }, "homeID": home_id })
         result = self._post_at_HomeCloudService("CheckForNewFirmwareAvailable", data=data)
         return result.json().get("CheckForNewFirmwareAvailableResult")
 
     def login(self, email, password):
-        data = json.dumps({ "token": { "Token": self.APPLICATION_TOKEN }, "email": email, "password": password })
+        data = json.dumps({ "token": { "Token": self.APPLICATION_TOKEN }, "eMail": email, "password": password })
         result = self._post_at_HomeCloudServiceAdmin("Login", data=data)
         return result.json().get("LoginResult")
  
     def login_with_expiration(self, email, password, expiration):
-        data = json.dumps({ "token": { "Token": self.APPLICATION_TOKEN }, "email": email, "password": password, "expiration": expiration })
+        data = json.dumps({ "token": { "Token": self.APPLICATION_TOKEN }, "eMail": email, "password": password, "expiration": expiration })
         result = self._post_at_HomeCloudServiceAdmin("LoginWithExpiration", data=data)
         return result.json().get("LoginWithExpirationResult")
     
     def send_forgotten_password_email(self, email):
-        data = json.dumps({ "token": { "Token": self.APPLICATION_TOKEN }, "email": email })
+        data = json.dumps({ "token": { "Token": self.APPLICATION_TOKEN }, "eMail": email })
         result = self._post_at_HomeCloudServiceAdmin("SendForgottenPasswordEmail", data=data)
-        print(result)
-        return result.json()
+        return result.json().get("SendForgottenPasswordEmailResult")
 
 if __name__ == "__main__":
     sk = SmartKitConnection(ACCESS_KEY)
-    result = sk.login(EMAIL, PASSWORD)
+    result = sk.check_for_new_firmware_available(HOME_ID)
     print(result)
 
 # vim:ts=4:nowrap
