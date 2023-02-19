@@ -1,6 +1,9 @@
 import unittest
+import json
 from ddt import ddt, data
 from sk import SmartKitConnection
+from connector import Connector
+from unittest.mock import MagicMock
 
 try:
     from secrets.secrets import *
@@ -9,9 +12,11 @@ except ImportError:
 
 class HomeCloudServiceTests(unittest.TestCase):
     # {'PingResult': {'Messages': [], 'Status': 0}}
-    @unittest.skip("working")
     def test_ping_should_return_0(self):
-        sut = SmartKitConnection("")
+        fakeConnector = Connector()
+        fakeConnector.post_at_HomeCloudService = MagicMock(return_value=json.dumps({'PingResult': {'Messages': [], 'Status': 0}}))
+
+        sut = SmartKitConnection("", fakeConnector)
         response = sut.ping()
         self.assertEqual(0, response.get("Status"))
         self.assertFalse(response.get("Messages"))
