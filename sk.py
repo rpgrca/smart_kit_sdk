@@ -121,12 +121,17 @@ class SmartKitConnection:
         result = self._post_at_HomeCloudService("GetEndpointUsageRecords", data=data)
         return result.json().get("GetEndpointUsageRecordsResult")
 
+    def get_scene(self, scene_id):
+        data = json.dumps({ "token": { "Token": self.__token }, "sceneID": scene_id })
+        result = self._post_at_HomeCloudService("GetScene", data=data)
+        return result.json().get("GetSceneResult")
+
 
 if __name__ == "__main__":
     sk = SmartKitConnection(ACCESS_KEY)
 #    result = sk.get_endpoint_usage_records(HOME_ID, ENDPOINT_ID, { "Day": 17, "Month": 2, "Year": 2023 }, { "Day": 18, "Month": 2, "Year": 2023 }, { "Hour": 23, "Minute": 59, "Second": 59, "Millisecond": 0 }, query_type = 1)
 
-    result = sk.get_firmware_information("HPA-4911")
+    result = sk.get_scene("HPA-4911")
     print(result)
 
 # vim:ts=4:nowrap
