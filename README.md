@@ -15,3 +15,5 @@ En el directorio secrets hay que crear un archivo secrets.py completando los cam
 ## Motivación
 
 La aplicación contiene un historial de temperaturas por habitación que me pareció interesante, sin embargo no era posible extraer esa información de la aplicación. Tampoco era posible consultar la información desde una computadora.
+
+![image](https://user-images.githubusercontent.com/15602473/219908190-bbea3e90-8972-44df-9429-799fc0527759.png)
