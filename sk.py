@@ -92,13 +92,19 @@ class SmartKitConnection:
     def get_scene(self, scene_id):
         return self._post_at_HomeCloudService("GetScene", self.__token, { "sceneID": scene_id })
 
+    def enumerate_device_models(self, device_model_id):
+        return self._post_at_HomeCloudService("EnumDeviceModels", self.__token, { "deviceModelID": device_model_id })
+
+    def enumerate_devices(self, home_id):
+        return self._post_at_HomeCloudService("EnumDevices", self.__token, { "homeID": home_id })
+
 
 if __name__ == "__main__":
     connector = Connector()
     sk = SmartKitConnection(ACCESS_KEY, connector)
 #    result = sk.get_endpoint_usage_records(HOME_ID, ENDPOINT_ID, { "Day": 17, "Month": 2, "Year": 2023 }, { "Day": 18, "Month": 2, "Year": 2023 }, { "Hour": 23, "Minute": 59, "Second": 59, "Millisecond": 0 }, query_type = 1)
 
-    result = sk.check_for_new_firmware_available(HOME_ID)
+    result = sk.enumerate_devices(HOME_ID)
     print(result)
 
 # vim:ts=4:nowrap
