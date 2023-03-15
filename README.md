@@ -1,3 +1,6 @@
+[![Python package][pipeline-img]][pipeline-url]
+[![codecov][codecov-img]][codecov-url]
+
 # BGH Smart Kit
 
 Implementación de prueba de los _webservices_ del Smart Kit en Python.
@@ -17,3 +20,8 @@ En el directorio secrets hay que crear un archivo secrets.py completando los cam
 La aplicación contiene un historial de temperaturas por habitación que me pareció interesante, sin embargo no era posible extraer esa información de la aplicación. Tampoco era posible consultar la información desde una computadora.
 
 ![image](https://user-images.githubusercontent.com/15602473/219908190-bbea3e90-8972-44df-9429-799fc0527759.png)
+
+[pipeline-img]: https://github.com/rpgrca/smart_kit_sdk/actions/workflows/python.yml/badge.svg
+[pipeline-url]: https://github.com/rpgrca/smart_kit_sdk/actions/workflows/python.yml
+[codecov-img]: https://codecov.io/gh/rpgrca/smart_kit_sdk/branch/main/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/rpgrca/smart_kit_sdk
