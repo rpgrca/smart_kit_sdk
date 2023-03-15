@@ -1,20 +1,38 @@
+import requests
 import unittest
 import json
 from ddt import ddt, data
 from sk import SmartKitConnection
 from connector import Connector
 from unittest.mock import MagicMock
+from unittest import mock
 
 try:
     from secrets.secrets import *
 except ImportError:
     from secrets.empty_secrets import *
 
+def mocked_requests_post(*args, **kwargs):
+    class MockResponse:
+        def __init__(self, json_data, status_code):
+            self.json_data = json_data
+            self.status_code = status_code
+
+        def json(self):
+            return self.json_data
+ 
+    dict = {
+        'https://bgh-services.solidmation.com/1.0/HomeCloudService.svc/Ping': MockResponse({'PingResult': {'Messages': [], 'Status': 0}}, 200)
+    }   
+    
+    return dict[args[0]]
+
 class HomeCloudServiceTests(unittest.TestCase):
     # {'PingResult': {'Messages': [], 'Status': 0}}
-    def test_ping_should_return_0(self):
+    @mock.patch('requests.Session.post', side_effect=mocked_requests_post)
+    def test_ping_should_return_0(self, mock_post):
         fakeConnector = Connector()
-        fakeConnector.post_at_HomeCloudService = MagicMock(return_value=json.dumps({'PingResult': {'Messages': [], 'Status': 0}}))
+        #fakeConnector.post_at_HomeCloudService = MagicMock(return_value=json.dumps({'PingResult': {'Messages': [], 'Status': 0}}))
 
         sut = SmartKitConnection("", fakeConnector)
         response = sut.ping()

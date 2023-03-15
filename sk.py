@@ -15,14 +15,14 @@ class SmartKitConnection:
         self.__connector = connector
 
     def ping(self):
-        result = self.__connector.post_at_HomeCloudService("Ping")
-        if result is None:
-            return None
+        return self._post_at_HomeCloudService("Ping")
 
-        return result.get("PingResult")
+    def _post_at_HomeCloudService(self, service: str, token: str = None, params: dict[str, str] = {}, root: str = None):
+        if token is None:
+            data = None
+        else:
+            data = json.dumps({ "token": { "Token": token }} | params)
 
-    def _post_at_HomeCloudService(self, service: str, token: str, params: dict[str, str] = {}, root: str = None):
-        data = json.dumps({ "token": { "Token": token }} | params)
         result = self.__connector.post_at_HomeCloudService(service, data=data)
         if result is None:
             return None
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     sk = SmartKitConnection(ACCESS_KEY, connector)
 #    result = sk.get_endpoint_usage_records(HOME_ID, ENDPOINT_ID, { "Day": 17, "Month": 2, "Year": 2023 }, { "Day": 18, "Month": 2, "Year": 2023 }, { "Hour": 23, "Minute": 59, "Second": 59, "Millisecond": 0 }, query_type = 1)
 
-    result = sk.enumerate_devices(HOME_ID)
+    result = sk.ping()
     print(result)
 
 # vim:ts=4:nowrap
