@@ -1,6 +1,6 @@
 attrs==23.1.0
 certifi==2023.7.22
-charset-normalizer==3.2.0
+charset-normalizer==3.3.0
 coverage==7.3.1
 ddt==1.6.0
 exceptiongroup==1.1.3
