@@ -37,7 +37,8 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest sk_tests.py --cov-config=coverage.ini --doctest-modules --junitxml=./coverage-${{ matrix.python-version }}.xml --cov-append --cov . --cov-report xml
+        pytest sk_tests.py --cov-config=coverage.ini --doctest-modules --junitxml=../main-coverage.xml --cov-append --cov . --cov-report xml
+        mv coverage.xml ../${{ matrix.python-version }}-coverage.xml
 
     - name: Upload coverage to CodeCov
       run: bash <(curl -s https://codecov.io/bash)
@@ -46,5 +47,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: code-coverage-report-${{ matrix.python-version }}
-        path: ./*coverage-${{ matrix.python-version }}.xml
+        path: ./*coverage.xml
 
