@@ -2,7 +2,7 @@ attrs==23.2.0
 certifi==2024.2.2
 charset-normalizer==3.3.2
 coverage==7.4.2
-ddt==1.7.1
+ddt==1.7.2
 exceptiongroup==1.2.0
 idna==3.6
 iniconfig==2.0.0
