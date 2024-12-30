@@ -1,6 +1,6 @@
 attrs==24.3.0
 certifi==2024.12.14
-charset-normalizer==3.4.0
+charset-normalizer==3.4.1
 coverage==7.6.9
 ddt==1.7.2
 exceptiongroup==1.2.2
