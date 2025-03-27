@@ -1,7 +1,7 @@
 attrs==25.3.0
 certifi==2025.1.31
 charset-normalizer==3.4.1
-coverage==7.6.12
+coverage==7.7.1
 ddt==1.7.2
 exceptiongroup==1.2.2
 idna==3.10
